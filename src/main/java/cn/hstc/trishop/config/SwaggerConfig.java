@@ -30,7 +30,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Tri-Shop APIs")
                 .description("20171153班第三组项目")
-                .version("0.1")
+                .version("1.0")
                 .build();
     }
 }
