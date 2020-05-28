@@ -108,4 +108,19 @@ public class User {
     public void setAdmin(int admin) {
         isAdmin = admin;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", account='" + account + '\'' +
+                ", password='" + password + '\'' +
+                ", gender=" + gender +
+                ", phoneNum='" + phoneNum + '\'' +
+                ", email='" + email + '\'' +
+                ", headUrl='" + headUrl + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", favorTypeList='" + favorTypeList + '\'' +
+                '}';
+    }
 }
