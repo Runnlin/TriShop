@@ -1,21 +1,26 @@
 package cn.hstc.trishop.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "product")
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
+@ApiModel("产品实体")
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     int id;//唯一产品id
-
+    @Column(name = "product_name")
     String name;//产品名称
+    @Column(name = "product_photo_url")
     String photoUrl;//产品图片
+    @Column(name = "product_introduction")
     String introduction; //产品介绍
+    @Column(name = "product_type_list")
     String typeList;//产品类型
 
     public int getId() {
