@@ -2,6 +2,7 @@ package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.UserDAO;
 import cn.hstc.trishop.pojo.User;
+import cn.hstc.trishop.result.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,14 @@ public class UserService {
         return userDAO.getByAccountAndPassword(account, passwd);
     }
 
-    public void add(User user) {
-        userDAO.save(user);
+    public Result add(User user) {
+        if (null == getByAccount(user.getAccount())) {
+            userDAO.saveAndFlush(user);
+            System.out.println("added user: "+user.getAccount()+"   id:"+user.getId());
+            return new Result(200);
+        } else {
+            System.out.println("用户已存在");
+            return new Result(400);
+        }
     }
 }

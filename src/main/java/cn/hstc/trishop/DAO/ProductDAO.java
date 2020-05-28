@@ -10,11 +10,14 @@ public interface ProductDAO extends JpaRepository<Product, Integer> {
     /*
        使用名称搜索产品
      */
-    Product findByNameLike(String account);
+    List<Product> findByNameLike(String account);
     /*
         使用类型搜索产品
         select * from product where TypeList in(?)
      */
-    List<Product> findByTypeListIn(List<String> typeList);
+    List<Product> findByTypeIn(List<String> typeList);
+    List<Product> findByType(String typeList);
+
+    List<Product> findAll();
 
 }

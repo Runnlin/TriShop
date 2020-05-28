@@ -20,8 +20,12 @@ public class Product {
     String photoUrl;//产品图片
     @Column(name = "product_introduction")
     String introduction; //产品介绍
-    @Column(name = "product_type_list")
-    String typeList;//产品类型
+    @Column(name = "product_type")
+    String type;//产品类型
+    @Column(name = "product_fee")
+    float fee;//产品费用
+    @Column(name = "product_sales")
+    int sales;//产品销量
 
     public int getId() {
         return id;
@@ -55,11 +59,40 @@ public class Product {
         this.introduction = introduction;
     }
 
-    public String getTypeList() {
-        return typeList;
+    public String getType() {
+        return type;
     }
 
-    public void setTypeList(String typeList) {
-        this.typeList = typeList;
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public float getFee() {
+        return fee;
+    }
+
+    public void setFee(float fee) {
+        this.fee = fee;
+    }
+
+    public int getSales() {
+        return sales;
+    }
+
+    public void setSales(int sales) {
+        this.sales = sales;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", introduction='" + introduction + '\'' +
+                ", type='" + type + '\'' +
+                ", fee=" + fee +
+                ", sales=" + sales +
+                '}';
     }
 }
