@@ -34,7 +34,7 @@ public class ProductService {
     }
 
     public List<Product> getProductListByType(String typeLists) {
-        // JSON转换成List进行搜索
+        // JSON转换成List进行搜索test
         List<String> list = JSONObject.parseArray(typeLists, String.class);
         if (1 == list.size()) {
             return getProductListBySingleType(list.get(0));
