@@ -1,27 +1,28 @@
 package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.ProductDAO;
+import cn.hstc.trishop.DAO.ProductDetailDAO;
+import cn.hstc.trishop.pojo.ProductDetail;
 import cn.hstc.trishop.pojo.Product;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Service
 public class ProductService {
     @Autowired
     ProductDAO productDAO;
+    @Autowired
+    ProductDetailDAO productDetailDAO;
+    @Autowired
+    UserService userService;
 
-    private boolean isExist(int id) {
+    public boolean isExist(int id) {
         Product product = productDAO.findById(id);
-        return null!=product;
+        return null != product;
     }
 
     public List<Product> list() {
@@ -44,5 +45,38 @@ public class ProductService {
 
     public List<Product> search(String productName) {
         return productDAO.findByNameLike('%' + productName.toUpperCase() + '%');
+    }
+
+    public void add(Product product) {
+        productDAO.saveAndFlush(product);
+        ProductDetail productDetail = new ProductDetail();
+        productDetail.setQuantity(product.getProductDetail().getQuantity());
+        productDetail.setSwipeList(product.getProductDetail().getSwipeList());
+        productDetailDAO.save(productDetail);
+    }
+
+    public String seeProduct(int userId, int productId) throws Exception {
+        String result = "未知错误";
+        if (isExist(userId)) {
+            Product product = productDAO.findById(productId);
+            // 把当前商品的类型加入到当前用户的喜爱类型列表
+            userService.addFavorType(userId, product.getType());
+            // 拼接返回结果，包括了 product和detail
+            StringBuilder productDetail = new StringBuilder(product.toString());
+            ProductDetail detail = productDetailDAO.findById(productId);
+            if (null != detail) {
+                if (product.toString().length() > 3) {
+                    productDetail.insert(
+                            (product.toString().length() - 1),
+                            "," + detail.toString());
+                } else {
+                    productDetail.insert(1, detail.toString());
+                }
+                result = "[" + productDetail.toString() + "]";
+            } else {
+                result = "没找到这个商品";
+            }
+        }
+        return result;
     }
 }

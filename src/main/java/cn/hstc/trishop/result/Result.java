@@ -4,9 +4,12 @@ public class Result {
 
     //响应码
     private int code;
+    // 响应说明
+    private String resultString;
 
-    public Result(int code) {
+    public Result(int code, String resultString) {
         this.code = code;
+        this.resultString = resultString;
     }
 
     public void setCode(int code) {
@@ -17,4 +20,11 @@ public class Result {
         return code;
     }
 
+    public String getResultString() {
+        return resultString;
+    }
+
+    public void setResultString(String resultString) {
+        this.resultString = resultString;
+    }
 }

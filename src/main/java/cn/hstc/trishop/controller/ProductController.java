@@ -4,6 +4,7 @@ import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.service.ProductService;
+import cn.hstc.trishop.utils.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.elasticsearch.client.license.LicensesStatus;
@@ -49,5 +50,30 @@ public class ProductController {
         // 对html标签进行转义，防止xss攻击
         String typeLists1 = HtmlUtils.htmlEscape(typeLists);
         return productService.getProductListByType("["+typeLists1+"]");
+    }
+
+    @ApiOperation(value = "新增商品",notes = "价格：product_fee  和  商品名：product_name  为必填项\n" +
+            "<b>不要设置ID</b>")
+    @PostMapping("api/product/add")
+    @ResponseBody
+    public Result addProduct(@RequestBody Product requestProduct) {
+        if (requestProduct.getFee() == 0)
+            return new Result(Constants.code_void, "价格不可为0");
+
+        if (!requestProduct.getName().isEmpty()) {
+            productService.add(requestProduct);
+            return new Result(Constants.code_success, "成功");
+        } else {
+            return new Result(Constants.code_void, "商品名不能为空");
+        }
+    }
+
+    @ApiOperation(value = "查看商品详情", notes = "只需字段： userId、productId\n" +
+            "找到了商品会返回商品详情，同时将该商品类型添加到用户喜爱类型，若没有找到就返回空")
+    @GetMapping("api/product/see")
+    @ResponseBody
+    public String seeProduct(@RequestParam("user_id") int userId,
+                              @RequestParam("product_id") int productId) throws Exception {
+        return productService.seeProduct(userId, productId);
     }
 }

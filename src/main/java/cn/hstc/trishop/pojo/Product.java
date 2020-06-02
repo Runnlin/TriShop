@@ -1,9 +1,11 @@
 package cn.hstc.trishop.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.*;
+import io.swagger.annotations.ApiParam;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "product")
@@ -11,21 +13,46 @@ import javax.persistence.*;
 @ApiModel("产品实体")
 public class Product {
     @Id
+    // 这是确保每个级联的表的主键ID都从一开始增加
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ApiModelProperty(hidden = true)
     @Column(name = "id")
     int id;//唯一产品id
+
+    @ApiParam(value = "产品名称")
     @Column(name = "product_name")
     String name;//产品名称
+
+    @ApiParam(value = "产品图片")
     @Column(name = "product_photo_url")
     String photoUrl;//产品图片
+
+    @ApiParam(value = "产品介绍")
     @Column(name = "product_introduction")
     String introduction; //产品介绍
+
+    @ApiParam(value = "产品类型: 1:数码  2:生活  ")
     @Column(name = "product_type")
     String type;//产品类型
+
+    @ApiParam(value = "产品费用")
     @Column(name = "product_fee")
     float fee;//产品费用
+
+    @ApiParam(value = "产品销量")
     @Column(name = "product_sales")
     int sales;//产品销量
+
+    @ApiParam(value = "产品上架日期")
+    @Column(name = "product_date")
+    @ApiModelProperty(hidden = true)
+    Date date;//产品上架日期
+
+    // ProductDetail 关联
+    // 通过关联表保存一对一关系
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @PrimaryKeyJoinColumn(name = "detail_id")
+    ProductDetail productDetail;
 
     public int getId() {
         return id;
@@ -83,16 +110,47 @@ public class Product {
         this.sales = sales;
     }
 
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public ProductDetail getProductDetail() {
+        return productDetail;
+    }
+
+    public void setProductDetail(ProductDetail productDetail) {
+        this.productDetail = productDetail;
+    }
+
     @Override
     public String toString() {
+        if (null == productDetail) {
+            return "{" +
+                    "id=" + id +
+                    ", date='" + date + '\'' +
+                    ", name='" + name + '\'' +
+                    ", photoUrl='" + photoUrl + '\'' +
+                    ", introduction='" + introduction + '\'' +
+                    ", type='" + type + '\'' +
+                    ", fee=" + fee +
+                    ", sales=" + sales +
+                    '}';
+        }
         return "{" +
                 "id=" + id +
+                ", date='" + date + '\'' +
                 ", name='" + name + '\'' +
                 ", photoUrl='" + photoUrl + '\'' +
                 ", introduction='" + introduction + '\'' +
                 ", type='" + type + '\'' +
                 ", fee=" + fee +
                 ", sales=" + sales +
+                ", quantity=" + productDetail.getQuantity() +
+                ", swipeList=" + productDetail.getSwipeList() +
                 '}';
     }
 }

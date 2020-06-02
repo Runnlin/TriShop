@@ -3,6 +3,7 @@ package cn.hstc.trishop.controller;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.service.UserService;
+import cn.hstc.trishop.utils.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +32,10 @@ public class UserController {
 
         User user = userService.get(account, requestUser.getPassword());
         if (null == user) {
-            return new Result(400);
+            return new Result(Constants.code_success, "");
         } else {
             System.out.println("id:"+user.getId()+" account:"+account+" login");
-            return new Result(200);
+            return new Result(Constants.code_nofind, "帐号或密码错误");
         }
     }
 
@@ -53,8 +54,8 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "用户注册帐号", notes = "发送用户信息，新增帐号\n" +
-            "必填项：account password ")
+    @ApiOperation(value = "用户注册帐号", notes = "发送用户信息，新增帐号.  必填项：account password \n" +
+            "<b>不要设置ID</b>")
     @PostMapping(value = "api/user/register")
     @ResponseBody
     public Result register(@RequestBody User requestUser) {
@@ -65,7 +66,7 @@ public class UserController {
 
             return userService.add(requestUser);
         } else {
-            return new Result(400);
+            return new Result(Constants.code_success, "");
         }
     }
 }

@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * 用户数据库操作
  */
 public interface UserDAO extends JpaRepository<User, Integer> {
+
+    User findById(int id);
     /*
        使用用户帐号搜索用户
      */
