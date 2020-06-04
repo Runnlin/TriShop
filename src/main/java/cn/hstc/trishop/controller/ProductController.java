@@ -1,20 +1,29 @@
 package cn.hstc.trishop.controller;
 
 import cn.hstc.trishop.pojo.Product;
-import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
+import cn.hstc.trishop.result.UploadFileResponse;
+import cn.hstc.trishop.service.FileService;
 import cn.hstc.trishop.service.ProductService;
 import cn.hstc.trishop.utils.Constants;
+import cn.hstc.trishop.utils.StringUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.elasticsearch.client.license.LicensesStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 商品相关
@@ -24,6 +33,8 @@ import java.util.List;
 public class ProductController {
     @Autowired
     ProductService productService;
+    @Autowired
+    FileService fileService;
 
     @ApiOperation(value = "获取所有商品列表")
     @GetMapping("api/products")
@@ -49,10 +60,10 @@ public class ProductController {
     public List<Product> listByType(@RequestParam("types") String typeLists) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String typeLists1 = HtmlUtils.htmlEscape(typeLists);
-        return productService.getProductListByType("["+typeLists1+"]");
+        return productService.getProductListByType("[" + typeLists1 + "]");
     }
 
-    @ApiOperation(value = "新增商品",notes = "价格：product_fee  和  商品名：product_name  为必填项\n" +
+    @ApiOperation(value = "新增商品", notes = "价格：product_fee  和  商品名：product_name  为必填项\n" +
             "<b>不要设置ID</b>")
     @PostMapping("api/product/add")
     @ResponseBody
@@ -73,7 +84,34 @@ public class ProductController {
     @GetMapping("api/product/see")
     @ResponseBody
     public String seeProduct(@RequestParam("user_id") int userId,
-                              @RequestParam("product_id") int productId) throws Exception {
+                             @RequestParam("product_id") int productId) throws Exception {
         return productService.seeProduct(userId, productId);
+    }
+
+    @ApiOperation(value = "随机获取商品的图片，可以用作滚动图", notes = "字段：pic_num  用作获取所需图片链接数量\n" +
+            "若请求的数量大于合计数量，则返回最大")
+    @GetMapping("api/product/getSwipeImages")
+    public String getProductSwipeImages() throws Exception {
+        return productService.getProductSwipeImages();
+    }
+
+    @ApiOperation(value = "上传单个文件")
+    @PostMapping("api/product/upload")
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file){
+        return fileService.upload(file);
+    }
+
+    @ApiOperation(value = "上传多个文件", notes = "前后端实现参考：https://zhuanlan.zhihu.com/p/60856486")
+    @PostMapping("api/product/uploads")
+    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+        return Arrays.stream(files)
+                .map(this::uploadFile)
+                .collect(Collectors.toList());
+    }
+
+    @ApiOperation(value = "下载单个文件")
+    @GetMapping("api/downloadFile/{fileName:.+}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+        return fileService.downloadFile(fileName, request);
     }
 }

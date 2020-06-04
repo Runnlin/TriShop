@@ -16,4 +16,8 @@ public class Constants {
     public static final  String result_void = "参数为空";
 
     public static final int code_success = 200;//成功
+
+    public static final String urlHead = "http://15820714680.qicp.vip/";
+
+    public static final String IMG_PATH = "F:/Picture/test";
 }

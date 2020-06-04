@@ -4,12 +4,23 @@ import cn.hstc.trishop.DAO.ProductDAO;
 import cn.hstc.trishop.DAO.ProductDetailDAO;
 import cn.hstc.trishop.pojo.ProductDetail;
 import cn.hstc.trishop.pojo.Product;
+import cn.hstc.trishop.result.UploadFileResponse;
+import cn.hstc.trishop.utils.Constants;
+import cn.hstc.trishop.utils.StringUtils;
 import com.alibaba.fastjson.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileUrlResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 @Service
 public class ProductService {
@@ -19,15 +30,25 @@ public class ProductService {
     ProductDetailDAO productDetailDAO;
     @Autowired
     UserService userService;
+    @Autowired
+    FileService fileService;
 
     public boolean isExist(int id) {
         Product product = productDAO.findById(id);
         return null != product;
     }
 
+    public Product getById(int id) {
+        return productDAO.findById(id);
+    }
+
     public List<Product> list() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         return productDAO.findAll(sort);
+    }
+
+    public int getSize() {
+        return (int)productDAO.count();
     }
 
     public List<Product> getProductListBySingleType(String typeList) {
@@ -78,5 +99,12 @@ public class ProductService {
             }
         }
         return result;
+    }
+
+    public String getProductSwipeImages() throws Exception {
+        return "<img src=\""+Constants.urlHead + "image/nv.jpg\">"
+                + "<img src=\""+Constants.urlHead + "image/pangxie.jpg\">"
+                + "<img src=\""+Constants.urlHead + "image/phone.png\">"
+                + "<img src=\""+Constants.urlHead + "image/quanji.jpg\">";
     }
 }
