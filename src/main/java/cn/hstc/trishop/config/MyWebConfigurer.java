@@ -21,10 +21,10 @@ public class MyWebConfigurer implements WebMvcConfigurer {
                 .allowedHeaders("*");
     }
 
-    // 映射URL和文件夹
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/api/file/**")
-                .addResourceLocations("file:"+"F:/Pictures/test/");
-    }
+//    // 映射URL和文件夹
+//    @Override
+//    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+//        registry.addResourceHandler("/api/file/**")
+//                .addResourceLocations("file:"+"F:/Pictures/test/");
+//    }
 }

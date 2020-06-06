@@ -31,10 +31,10 @@ public class UserController {
         account = HtmlUtils.htmlEscape(account);
 
         User user = userService.get(account, requestUser.getPassword());
-        if (null == user) {
+        if (null != user) {
+            System.out.println("id:"+user.getId()+" account:"+account+" logged");
             return new Result(Constants.code_success, "");
         } else {
-            System.out.println("id:"+user.getId()+" account:"+account+" login");
             return new Result(Constants.code_nofind, "帐号或密码错误");
         }
     }

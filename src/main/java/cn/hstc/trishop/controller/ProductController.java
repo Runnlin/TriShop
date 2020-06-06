@@ -88,8 +88,7 @@ public class ProductController {
         return productService.seeProduct(userId, productId);
     }
 
-    @ApiOperation(value = "随机获取商品的图片，可以用作滚动图", notes = "字段：pic_num  用作获取所需图片链接数量\n" +
-            "若请求的数量大于合计数量，则返回最大")
+    @ApiOperation(value = "随机获取商品的图片", notes = "内容暂时写死")
     @GetMapping("api/product/getSwipeImages")
     public String getProductSwipeImages() throws Exception {
         return productService.getProductSwipeImages();
