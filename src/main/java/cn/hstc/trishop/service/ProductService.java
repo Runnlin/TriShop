@@ -4,6 +4,7 @@ import cn.hstc.trishop.DAO.ProductDAO;
 import cn.hstc.trishop.DAO.ProductDetailDAO;
 import cn.hstc.trishop.pojo.ProductDetail;
 import cn.hstc.trishop.pojo.Product;
+import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.result.UploadFileResponse;
 import cn.hstc.trishop.utils.Constants;
 import cn.hstc.trishop.utils.StringUtils;
@@ -57,11 +58,11 @@ public class ProductService {
 
     public List<Product> getProductListByType(String typeLists) {
         // JSON转换成List进行搜索test
-        List<String> list = JSONObject.parseArray(typeLists, String.class);
-        if (1 == list.size()) {
-            return getProductListBySingleType(list.get(0));
+        List<String> lists = JSONObject.parseArray(typeLists, String.class);
+        if (1 == lists.size()) {
+            return getProductListBySingleType(lists.get(0));
         }
-        return productDAO.findByTypeIn(list);
+        return productDAO.findByTypeIn(lists);
     }
 
     public List<Product> search(String productName) {
@@ -69,11 +70,8 @@ public class ProductService {
     }
 
     public void add(Product product) {
-        productDAO.saveAndFlush(product);
-        ProductDetail productDetail = new ProductDetail();
-        productDetail.setQuantity(product.getProductDetail().getQuantity());
-        productDetail.setSwipeList(product.getProductDetail().getSwipeList());
-        productDetailDAO.save(productDetail);
+        productDAO.save(product);
+        System.out.println("新增商品:\n"+product.getName());
     }
 
     public String seeProduct(int userId, int productId) throws Exception {
@@ -106,5 +104,27 @@ public class ProductService {
                 + "<img src=\""+Constants.urlHead + "image/pangxie.jpg\">"
                 + "<img src=\""+Constants.urlHead + "image/phone.png\">"
                 + "<img src=\""+Constants.urlHead + "image/quanji.jpg\">";
+    }
+
+    public List<String> getProductDetailSwipe(int id) throws Exception {
+        Product product = getById(id);
+        if (null != product) {
+            String swipeList = product.getProductDetail().getSwipeList();
+            if (!swipeList.startsWith("["))
+                swipeList = "["+swipeList+"]";
+            List<String> lists = JSONObject.parseArray(swipeList, String.class);
+            return lists;
+        }
+        return null;
+    }
+
+    public Result deleteProduct(int id) throws Exception {
+        Product product = getById(id);
+        if (null != product) {
+            productDAO.delete(product);
+            return new Result(Constants.code_success, "删除成功");
+        } else {
+            return new Result(Constants.code_nofind, "找不到该商品");
+        }
     }
 }

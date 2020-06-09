@@ -38,12 +38,14 @@ public class ProductController {
 
     @ApiOperation(value = "获取所有商品列表")
     @GetMapping("api/products")
+    @ResponseBody
     public List<Product> list() throws Exception {
         return productService.list();
     }
 
     @ApiOperation(value = "通过商品名搜索")
     @GetMapping("api/product/search")
+    @ResponseBody
     public List<Product> searchProduct(@RequestParam("keywords") String keywords) throws Exception {
         if ("".equals(keywords)) {
             return productService.list();
@@ -52,14 +54,16 @@ public class ProductController {
         }
     }
 
-    @ApiOperation(value = "通过类别获取获取商品列表", notes = "通过typeList进行查找，typeList格式：“0,1,2”" +
-            "\n 如果typeList为单独一个0，则返回所有商品数据" +
+    @ApiOperation(value = "通过类别获取获取商品列表", notes = "通过typeList进行查找，typeList格式：“1,2”" +
             "\n 参数名： types")
     @GetMapping("api/product/types")
     @ResponseBody
     public List<Product> listByType(@RequestParam("types") String typeLists) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String typeLists1 = HtmlUtils.htmlEscape(typeLists);
+        if (typeLists == "0") {
+            return productService.list();
+        }
         return productService.getProductListByType("[" + typeLists1 + "]");
     }
 
@@ -88,29 +92,44 @@ public class ProductController {
         return productService.seeProduct(userId, productId);
     }
 
-    @ApiOperation(value = "随机获取商品的图片", notes = "内容暂时写死")
+    @ApiOperation(value = "首页轮播图片", notes = "内容暂时写死")
     @GetMapping("api/product/getSwipeImages")
+    @ResponseBody
     public String getProductSwipeImages() throws Exception {
         return productService.getProductSwipeImages();
     }
 
-    @ApiOperation(value = "上传单个文件")
-    @PostMapping("api/product/upload")
-    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file){
-        return fileService.upload(file);
+    @ApiOperation(value = "获取某商品的轮播图")
+    @GetMapping("api/product/getlunbotu")
+    @ResponseBody
+    public List<String> getProductDetailSwipe(@RequestParam int id) throws Exception {
+        return productService.getProductDetailSwipe(id);
     }
 
-    @ApiOperation(value = "上传多个文件", notes = "前后端实现参考：https://zhuanlan.zhihu.com/p/60856486")
-    @PostMapping("api/product/uploads")
-    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
-        return Arrays.stream(files)
-                .map(this::uploadFile)
-                .collect(Collectors.toList());
+    @ApiOperation(value = "删除某商品")
+    @GetMapping("api/product/delete")
+    @ResponseBody
+    public Result deleteProduct(@RequestParam int id) throws Exception {
+        return productService.deleteProduct(id);
     }
 
-    @ApiOperation(value = "下载单个文件")
-    @GetMapping("api/downloadFile/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
-        return fileService.downloadFile(fileName, request);
-    }
+//    @ApiOperation(value = "上传单个文件")
+//    @PostMapping("api/product/upload")
+//    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file){
+//        return fileService.upload(file);
+//    }
+//
+//    @ApiOperation(value = "上传多个文件", notes = "前后端实现参考：https://zhuanlan.zhihu.com/p/60856486")
+//    @PostMapping("api/product/uploads")
+//    public List<UploadFileResponse> uploadMultipleFiles(@RequestParam("files") MultipartFile[] files) {
+//        return Arrays.stream(files)
+//                .map(this::uploadFile)
+//                .collect(Collectors.toList());
+//    }
+//
+//    @ApiOperation(value = "下载单个文件")
+//    @GetMapping("api/downloadFile/{fileName:.+}")
+//    public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) {
+//        return fileService.downloadFile(fileName, request);
+//    }
 }

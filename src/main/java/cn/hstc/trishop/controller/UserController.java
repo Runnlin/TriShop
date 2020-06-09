@@ -7,9 +7,10 @@ import cn.hstc.trishop.utils.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
+
+import javax.servlet.http.HttpSession;
 
 /**
  * 用户管理控制类
@@ -25,15 +26,16 @@ public class UserController {
             "\n<b>只需发送account和password字段</b>")
     @PostMapping(value = "api/user/login")
     @ResponseBody
-    public Result login(@RequestBody User requestUser) throws Exception {
+    public Result login(@RequestBody User requestUser, HttpSession session) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String account = requestUser.getAccount();
         account = HtmlUtils.htmlEscape(account);
 
         User user = userService.get(account, requestUser.getPassword());
         if (null != user) {
-            System.out.println("id:"+user.getId()+" account:"+account+" logged");
-            return new Result(Constants.code_success, "");
+            System.out.println("id:"+user.getId()+" account: "+account+" logged");
+            session.setAttribute("user", user);
+            return new Result(Constants.code_success, user.toString());
         } else {
             return new Result(Constants.code_nofind, "帐号或密码错误");
         }
@@ -42,15 +44,15 @@ public class UserController {
     @ApiOperation(value = "用户忘记密码", notes = "通过用户名查询，返回String用户信息")
     @PostMapping(value = "api/user/forget")
     @ResponseBody
-    public String forget(@RequestParam(name = "account") String account) throws Exception {
+    public Result forget(@RequestParam(name = "account") String account) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String account1 = HtmlUtils.htmlEscape(account);
 
         User user = userService.getByAccount(account1);
         if (null == user) {
-            return "查无此人";
+            return new Result(Constants.code_nofind, "查无此人");
         } else {
-            return user.toString();
+            return new Result(Constants.code_success, user.getPassword());
         }
     }
 

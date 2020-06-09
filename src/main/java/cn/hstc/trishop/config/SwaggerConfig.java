@@ -23,14 +23,18 @@ public class SwaggerConfig {
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("cn.hstc.trishop"))
                 .paths(PathSelectors.any())
-                .build();
+                .build()
+                .pathMapping("/");
     }
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("Tri-Shop APIs")
-                .description("20171153班第三组项目")
-                .version("1.0")
+                .description("20171153班第三组项目\n" +
+                        "<b>所有的符号{:””’’,}都必须使用英文字符；\n" +
+                        "若一个大括号里有多个参数，在最后一个参数之前的参数最后都要加上逗号\n" +
+                        "因为参数名和参数值(字符串类型)使用双引号括起来，所以参数名和参数值内部不能出现双引号</b>\n")
+                .version("1.2")
                 .build();
     }
 }

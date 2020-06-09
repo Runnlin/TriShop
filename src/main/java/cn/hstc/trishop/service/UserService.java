@@ -40,7 +40,7 @@ public class UserService {
             // 获取用户当前喜爱类型列表
             String userTypeList = userDAO.findById(userId).getFavorTypeList();
             // 如果待添加的喜爱类型不在喜爱列表里，才添加
-            if (!userTypeList.contains(singleType)) {
+            if (!userTypeList.contains(String.valueOf(singleType))) {
                 // 防止有时候后面已经有逗号
                 if (userTypeList.endsWith(","))
                     userTypeList += singleType;
