@@ -61,7 +61,7 @@ public class ProductController {
     public List<Product> listByType(@RequestParam("types") String typeLists) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String typeLists1 = HtmlUtils.htmlEscape(typeLists);
-        if (typeLists == "0") {
+        if (typeLists1.equals("0")) {
             return productService.list();
         }
         return productService.getProductListByType("[" + typeLists1 + "]");
@@ -71,12 +71,12 @@ public class ProductController {
             "<b>不要设置ID</b>")
     @PostMapping("api/product/add")
     @ResponseBody
-    public Result addProduct(@RequestBody Product requestProduct) {
+    public Result addOrUpdate(@RequestBody Product requestProduct) {
         if (requestProduct.getFee() == 0)
             return new Result(Constants.code_void, "价格不可为0");
 
         if (!requestProduct.getName().isEmpty()) {
-            productService.add(requestProduct);
+            productService.addOrUpdate(requestProduct);
             return new Result(Constants.code_success, "成功");
         } else {
             return new Result(Constants.code_void, "商品名不能为空");

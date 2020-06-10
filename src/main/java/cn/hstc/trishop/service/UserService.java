@@ -37,8 +37,9 @@ public class UserService {
 
     public void addFavorType(int userId, String singleType) {
         if (!"".equals(singleType)) {
+            User user = userDAO.findById(userId);
             // 获取用户当前喜爱类型列表
-            String userTypeList = userDAO.findById(userId).getFavorTypeList();
+            String userTypeList = user.getFavorTypeList();
             // 如果待添加的喜爱类型不在喜爱列表里，才添加
             if (!userTypeList.contains(String.valueOf(singleType))) {
                 // 防止有时候后面已经有逗号
@@ -47,7 +48,9 @@ public class UserService {
                 else
                     userTypeList += "," + singleType;
                 // 再将喜爱类型列表放回去
-                userDAO.findById(userId).setFavorTypeList(userTypeList);
+                user.setFavorTypeList(userTypeList);
+                userDAO.save(user);
+                System.out.println("id: "+user.getId()+" 更新用户兴趣列表: "+user.getFavorTypeList());
             }
         }
     }

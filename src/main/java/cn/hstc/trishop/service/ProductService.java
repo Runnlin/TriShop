@@ -1,8 +1,8 @@
 package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.ProductDAO;
-import cn.hstc.trishop.DAO.ProductDetailDAO;
-import cn.hstc.trishop.pojo.ProductDetail;
+//import cn.hstc.trishop.DAO.ProductDetailDAO;
+//import cn.hstc.trishop.pojo.ProductDetail;
 import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.result.UploadFileResponse;
@@ -27,8 +27,9 @@ import java.util.Random;
 public class ProductService {
     @Autowired
     ProductDAO productDAO;
-    @Autowired
-    ProductDetailDAO productDetailDAO;
+//    @Autowired
+//    ProductDetailDAO productDetailDAO;
+//    ProductDetail productDetail;
     @Autowired
     UserService userService;
     @Autowired
@@ -69,8 +70,12 @@ public class ProductService {
         return productDAO.findByNameLike('%' + productName.toUpperCase() + '%');
     }
 
-    public void add(Product product) {
+    public void addOrUpdate(Product product) {
         productDAO.save(product);
+//        productDetail = productDetailDAO.getOne(product.getId());
+//        productDetail.setQuantity(product.getProductDetail().getQuantity());
+//        productDetail.setSwipeList(product.getProductDetail().getSwipeList());
+//        productDetailDAO.save(productDetail);
         System.out.println("新增商品:\n"+product.getName());
     }
 
@@ -79,41 +84,47 @@ public class ProductService {
         if (isExist(userId)) {
             Product product = productDAO.findById(productId);
             // 把当前商品的类型加入到当前用户的喜爱类型列表
-            userService.addFavorType(userId, product.getType());
-            // 拼接返回结果，包括了 product和detail
-            StringBuilder productDetail = new StringBuilder(product.toString());
-            ProductDetail detail = productDetailDAO.findById(productId);
-            if (null != detail) {
-                if (product.toString().length() > 3) {
-                    productDetail.insert(
-                            (product.toString().length() - 1),
-                            "," + detail.toString());
-                } else {
-                    productDetail.insert(1, detail.toString());
-                }
-                result = "[" + productDetail.toString() + "]";
+            if (null != product) {
+                userService.addFavorType(userId, product.getType());
+                return product.toString();
             } else {
-                result = "没找到这个商品";
+                return "无此商品";
             }
+            // 拼接返回结果，包括了 product和detail
+//            StringBuilder productDetail = new StringBuilder(product.toString());
+//            ProductDetail detail = productDetailDAO.findById(productId);
+//            if (null != detail) {
+//                if (product.toString().length() > 3) {
+//                    productDetail.insert(
+//                            (product.toString().length() - 1),
+//                            "," + detail.toString());
+//                } else {
+//                    productDetail.insert(1, detail.toString());
+//                }
+//                result = "[" + productDetail.toString() + "]";
+//            } else {
+//                result = "没找到这个商品";
+//            }
         }
         return result;
     }
 
     public String getProductSwipeImages() throws Exception {
-        return "<img src=\""+Constants.urlHead + "image/nv.jpg\">"
-                + "<img src=\""+Constants.urlHead + "image/pangxie.jpg\">"
-                + "<img src=\""+Constants.urlHead + "image/phone.png\">"
-                + "<img src=\""+Constants.urlHead + "image/quanji.jpg\">";
+        return "[{\"src\"='http://localhost:8443/image/nv.jpg'},"
+                + "{\"src\"='http://localhost:8443/image/pangxie.jpg'},"
+                + "{\"src\"='http://localhost:8443/image/phone.png'},"
+                + "{\"src\"='http://localhost:8443/image/quanji.jpg'}]";
     }
 
     public List<String> getProductDetailSwipe(int id) throws Exception {
         Product product = getById(id);
         if (null != product) {
-            String swipeList = product.getProductDetail().getSwipeList();
+//            String swipeList = product.getProductDetail().getSwipeList();
+            String swipeList = product.getSwipes();
+
             if (!swipeList.startsWith("["))
                 swipeList = "["+swipeList+"]";
-            List<String> lists = JSONObject.parseArray(swipeList, String.class);
-            return lists;
+            return JSONObject.parseArray(swipeList, String.class);
         }
         return null;
     }
@@ -122,6 +133,7 @@ public class ProductService {
         Product product = getById(id);
         if (null != product) {
             productDAO.delete(product);
+            System.out.println("id: "+product.getId()+" name: "+product.getName()+" deleted");
             return new Result(Constants.code_success, "删除成功");
         } else {
             return new Result(Constants.code_nofind, "找不到该商品");

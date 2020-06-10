@@ -48,11 +48,19 @@ public class Product {
     @ApiModelProperty(hidden = true)
     Date date;//产品上架日期
 
+    @ApiParam(value = "产品存货数量")
+    @Column(name = "product_quantity")
+    int quantity; // 剩余存货
+
+    @ApiParam(value = "产品轮播图")
+    @Column(name = "product_swipe")
+    String swipes;
+
     // ProductDetail 关联
     // 通过关联表保存一对一关系
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "detail_id")
-    ProductDetail productDetail;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    @PrimaryKeyJoinColumn(name = "detail_id")
+//    ProductDetail productDetail;
 
     public int getId() {
         return id;
@@ -118,39 +126,44 @@ public class Product {
         this.date = date;
     }
 
-    public ProductDetail getProductDetail() {
-        return productDetail;
+    public int getQuantity() {
+        return quantity;
     }
 
-    public void setProductDetail(ProductDetail productDetail) {
-        this.productDetail = productDetail;
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
     }
+
+    public String getSwipes() {
+        return swipes;
+    }
+
+    public void setSwipes(String swipes) {
+        this.swipes = swipes;
+    }
+
+    //    public ProductDetail getProductDetail() {
+//        return productDetail;
+//    }
+
+//    public void setProductDetail(ProductDetail productDetail) {
+//        this.productDetail = productDetail;
+//    }
+
 
     @Override
     public String toString() {
-        if (null == productDetail) {
-            return "{" +
-                    "id=" + id +
-                    ", date='" + date + '\'' +
-                    ", name='" + name + '\'' +
-                    ", photoUrl='" + photoUrl + '\'' +
-                    ", introduction='" + introduction + '\'' +
-                    ", type='" + type + '\'' +
-                    ", fee=" + fee +
-                    ", sales=" + sales +
-                    '}';
-        }
         return "{" +
                 "id=" + id +
-                ", date='" + date + '\'' +
                 ", name='" + name + '\'' +
                 ", photoUrl='" + photoUrl + '\'' +
                 ", introduction='" + introduction + '\'' +
                 ", type='" + type + '\'' +
                 ", fee=" + fee +
                 ", sales=" + sales +
-                ", quantity=" + productDetail.getQuantity() +
-                ", swipeList=" + productDetail.getSwipeList() +
+                ", date=" + date +
+                ", quantity=" + quantity +
+                ", swipes='" + swipes + '\'' +
                 '}';
     }
 }
