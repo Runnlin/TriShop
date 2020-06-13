@@ -1,5 +1,6 @@
 package cn.hstc.trishop.controller;
 
+import cn.hstc.trishop.pojo.Order;
 import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
@@ -90,4 +91,10 @@ public class UserController {
         return userService.list();
     }
 
+    @ApiOperation(value = "获取用户的所有订单", notes = "订单字段: int id; int pid; int uid; Date date")
+    @GetMapping(value = "api/user/getorder")
+    @ResponseBody
+    public List<Order> getUserOrders(@RequestParam int userId) {
+        return userService.getOrders(userId);
+    }
 }

@@ -116,6 +116,7 @@ public class ProductController {
 
     @ApiOperation(value = "购买商品", notes = "会把商品库存减一，同时添加入订单表")
     @GetMapping("api/product/buy")
+    @ResponseBody
     public Result buyProduct(@RequestParam("user_id") int userId,
                              @RequestParam("product_id") int productId) {
         return productService.buyProduct(userId, productId);
@@ -123,6 +124,7 @@ public class ProductController {
 
     @ApiOperation(value = "通过多个商品id获取多个商品信息", notes = "request格式：\"1,2,3\"")
     @GetMapping("api/product/getlist")
+    @ResponseBody
     public List<Product> getManyProducts(@RequestParam String res) {
         // 对html标签进行转义，防止xss攻击
         res = HtmlUtils.htmlEscape(res);
@@ -131,6 +133,7 @@ public class ProductController {
 
     @ApiOperation(value = "获取用户已购买订单")
     @GetMapping("api/product/getOrders")
+    @ResponseBody
     public List<Product> getOrders(@RequestParam int userId) {
         return productService.getOrderProductsByUserId(userId);
     }
