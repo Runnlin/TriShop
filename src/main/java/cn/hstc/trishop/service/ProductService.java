@@ -1,7 +1,9 @@
 package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.ProductDAO;
+import cn.hstc.trishop.pojo.Order;
 import cn.hstc.trishop.pojo.Product;
+import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.utils.Constants;
 import com.alibaba.fastjson.JSONObject;
@@ -14,10 +16,13 @@ import java.util.List;
 
 @Service
 public class ProductService {
+
     @Autowired
     ProductDAO productDAO;
     @Autowired
     UserService userService;
+    @Autowired
+    OrderService orderService;
     @Autowired
     FileService fileService;
 
@@ -109,14 +114,21 @@ public class ProductService {
         }
     }
 
-    public Result buyProduct(int id) {
-        Product product = getById(id);
-        if (null != product) {
-            if (product.getQuantity()>0)
-                product.setQuantity(product.getQuantity()-1);
-            return new Result(Constants.code_success, "购买成功");
+    public Result buyProduct(int userId, int productId) {
+        if (productDAO.existsById(productId) && userService.existsById(userId)) {
+            Product product = getById(productId);
+            if (null != product) {
+                if (product.getQuantity() > 0) {
+                    product.setQuantity(product.getQuantity() - 1);
+                    productDAO.save(product);
+                    return orderService.addOrUpdate(userId, productId);
+                }
+                else
+                    return new Result(Constants.code_nofind, "购买失败:库存不足");
+            }
+            return new Result(Constants.code_nofind, "购买失败:无此商品");
         }
-        return new Result(Constants.code_nofind, "购买失败:无此商品");
+        return new Result(Constants.code_nofind, "购买失败:用户或商品id错误");
     }
 
     public List<Product> getManyProducts(String res) {
@@ -127,5 +139,18 @@ public class ProductService {
         for (Integer integer : reslist)
             results.add(productDAO.getOne(integer));
         return results;
+    }
+
+    public List<Product> getOrderProductsByUserId(int userId) {
+        if (userService.existsById(userId)) {
+            List<Product> results = new ArrayList<>();
+            List<Order> orders = orderService.listByUserId(userId);
+            for (Order order : orders) {
+                results.add(productDAO.getOne(order.getPid()));
+            }
+
+            return results;
+        }
+        return null;
     }
 }

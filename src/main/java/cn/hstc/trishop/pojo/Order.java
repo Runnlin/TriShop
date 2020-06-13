@@ -7,37 +7,62 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiParam;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 /**
  * 订单
  */
 @Entity
-@Table(name = "cart")
+@Table(name = "product_orders")
 @JsonIgnoreProperties({"handler","hibernateLazyInitializer"})
 @ApiModel("订单实体")
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     int id;
 
-    String pids;
+    int uid;
+
+    int pid;
+
+    Date date;
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public int getUid() {
+        return uid;
     }
 
-    public String getPids() {
-        return pids;
+    public void setUid(int id) {
+        this.uid = id;
     }
 
-    public void setPids(String pids) {
-        this.pids = pids;
+    public int getPid() {
+        return pid;
+    }
+
+    public void setPid(int pid) {
+        this.pid = pid;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "uid=" + uid +
+                ", pid=" + pid +
+                ", date=" + date +
+                '}';
     }
 }

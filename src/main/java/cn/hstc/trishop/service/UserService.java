@@ -2,6 +2,8 @@ package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.OrderDAO;
 import cn.hstc.trishop.DAO.UserDAO;
+import cn.hstc.trishop.pojo.Order;
+import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.utils.Constants;
@@ -21,6 +23,11 @@ public class UserService {
     public boolean isExist(String account) {
         User user = getByAccount(account);
         return null!=user;
+    }
+
+    public boolean existsById(int userId) {
+        User user = userDAO.findById(userId);
+        return null != user;
     }
 
     public User getByAccount(String account) {
@@ -74,12 +81,4 @@ public class UserService {
 //            cartDAO.save(cart);
 //        }
 //    }
-
-    public String getCart(int userId) {
-        User user = userDAO.findById(userId);
-        if (null != user) {
-            return orderDAO.getOne(userId).getPids();
-        }
-        return "查无此人";
-    }
 }

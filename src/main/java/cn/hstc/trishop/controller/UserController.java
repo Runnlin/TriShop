@@ -1,5 +1,6 @@
 package cn.hstc.trishop.controller;
 
+import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.service.UserService;
@@ -88,4 +89,5 @@ public class UserController {
     public List<User> getAllUserInfo() {
         return userService.list();
     }
+
 }
