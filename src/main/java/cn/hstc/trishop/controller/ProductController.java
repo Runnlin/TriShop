@@ -7,8 +7,10 @@ import cn.hstc.trishop.service.FileService;
 import cn.hstc.trishop.service.ProductService;
 import cn.hstc.trishop.utils.Constants;
 import cn.hstc.trishop.utils.StringUtils;
+import com.alibaba.fastjson.parser.Feature;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.mapstruct.MapperConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -76,7 +78,6 @@ public class ProductController {
             return new Result(Constants.code_void, "价格不可为0");
 
         if (!requestProduct.getName().isEmpty()) {
-            productService.addOrUpdate(requestProduct);
             return new Result(Constants.code_success, "成功");
         } else {
             return new Result(Constants.code_void, "商品名不能为空");
@@ -87,7 +88,7 @@ public class ProductController {
             "找到了商品会返回商品详情，同时将该商品类型添加到用户喜爱类型，若没有找到就返回空")
     @GetMapping("api/product/see")
     @ResponseBody
-    public String seeProduct(@RequestParam("user_id") int userId,
+    public Product seeProduct(@RequestParam("user_id") int userId,
                              @RequestParam("product_id") int productId) throws Exception {
         return productService.seeProduct(userId, productId);
     }
@@ -111,6 +112,20 @@ public class ProductController {
     @ResponseBody
     public Result deleteProduct(@RequestParam int id) throws Exception {
         return productService.deleteProduct(id);
+    }
+
+    @ApiOperation(value = "购买商品", notes = "会把商品库存减一")
+    @GetMapping("api/product/buy")
+    public Result buyProduct(@RequestParam int id) {
+        return productService.buyProduct(id);
+    }
+
+    @ApiOperation(value = "通过多个商品id获取多个商品信息", notes = "request格式：\"1,2,3\"")
+    @GetMapping("api/product/getlist")
+    public List<Product> getManyProducts(@RequestParam String res) {
+        // 对html标签进行转义，防止xss攻击
+        res = HtmlUtils.htmlEscape(res);
+        return productService.getManyProducts(res);
     }
 
 //    @ApiOperation(value = "上传单个文件")

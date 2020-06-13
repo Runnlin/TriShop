@@ -17,7 +17,7 @@ public class Constants {
 
     public static final int code_success = 200;//成功
 
-    public static final String urlHead = "http://15820714680.qicp.vip/";
+    public static final String urlHead = "http://15820714680.qicp.vip:23559";
 
     public static final String IMG_PATH = "F:/Picture/test";
 }

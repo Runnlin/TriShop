@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * 用户管理控制类
@@ -56,8 +57,9 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "用户注册帐号", notes = "发送用户信息，新增帐号.  必填项：account password \n" +
-            "<b>不要设置ID</b>")
+    @ApiOperation(value = "新增/编辑 用户", notes = "发送用户信息，新增帐号.  必填项：account password \n" +
+            "<b>不要设置ID</b>\n" +
+            "若此用户已存在，则根据上传信息更新用户信息")
     @PostMapping(value = "api/user/register")
     @ResponseBody
     public Result register(@RequestBody User requestUser) {
@@ -66,9 +68,24 @@ public class UserController {
             // 对html标签进行转义，防止xss攻击
             requestUser.setAccount(HtmlUtils.htmlEscape(requestUser.getAccount()));
 
-            return userService.add(requestUser);
+            return userService.addOrUpdate(requestUser);
         } else {
             return new Result(Constants.code_success, "");
         }
+    }
+
+    @ApiOperation(value = "根据account获取用户信息", notes = "只需字段：account")
+    @GetMapping(value = "api/user/get")
+    @ResponseBody
+    public User getUserInfo(@RequestParam String account) {
+        account = HtmlUtils.htmlEscape(account);
+        return userService.getByAccount(account);
+    }
+
+    @ApiOperation(value = "获取所有用户信息", notes = "只需字段：account")
+    @GetMapping(value = "api/user/getall")
+    @ResponseBody
+    public List<User> getAllUserInfo() {
+        return userService.list();
     }
 }

@@ -54,6 +54,26 @@ public class User {
     @Column(name = "favor_type_list")
     String favorTypeList = "0";//用户的喜好类型列表
 
+//    @OneToOne
+//    @JoinColumn(name = "pids")
+//    private Cart cart;
+
+    public int getIsAdmin() {
+        return isAdmin;
+    }
+
+    public void setIsAdmin(int isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+//    public Cart getCart() {
+//        return cart;
+//    }
+//
+//    public void setCart(Cart cart) {
+//        this.cart = cart;
+//    }
+
     public int getId() {
         return id;
     }

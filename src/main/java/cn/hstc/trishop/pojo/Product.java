@@ -3,6 +3,7 @@ package cn.hstc.trishop.pojo;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.annotations.*;
 import io.swagger.annotations.ApiParam;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -153,17 +154,23 @@ public class Product {
 
     @Override
     public String toString() {
-        return "{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", photoUrl='" + photoUrl + '\'' +
-                ", introduction='" + introduction + '\'' +
-                ", type='" + type + '\'' +
-                ", fee=" + fee +
-                ", sales=" + sales +
-                ", date=" + date +
-                ", quantity=" + quantity +
-                ", swipes='" + swipes + '\'' +
-                '}';
+        return HtmlUtils.htmlUnescape("[\"{" +
+                "\"id\"=" + id +
+                ", \"name\"=\"" + name + "\"" +
+                ", \"photoUrl\"=\"" + photoUrl + "\"" +
+                ", \"introduction\"=\"" + introduction + "\"" +
+                ", \"type\"=\"" + type + "\"" +
+                ", \"fee\"=" + fee +
+                ", \"sales\"=" + sales +
+                ", \"date\"=" + date + "\"" +
+                ", \"quantity\"=" + quantity +
+                ", \"swipes\"=\"" + swipes + "\"" +
+                "}\"]");
+//                        .replace("&lt;","<")
+//                .replace("&#39;","'")
+//                .replace("&gt;",">")
+//                .replace("&quot;", "\"")
+//                .replace("&nbsp;"," ");
+
     }
 }

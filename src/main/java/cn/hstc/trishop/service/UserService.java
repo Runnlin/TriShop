@@ -1,16 +1,22 @@
 package cn.hstc.trishop.service;
 
+import cn.hstc.trishop.DAO.OrderDAO;
 import cn.hstc.trishop.DAO.UserDAO;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
     @Autowired
     UserDAO userDAO;
+    @Autowired
+    OrderDAO orderDAO;
 
     public boolean isExist(String account) {
         User user = getByAccount(account);
@@ -21,12 +27,18 @@ public class UserService {
         return userDAO.findByAccount(account);
     }
 
+    public List<User> list() {
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        return userDAO.findAll(sort);
+    }
+
     public User get(String account, String passwd) {
         return userDAO.getByAccountAndPassword(account, passwd);
     }
 
-    public Result add(User user) {
+    public Result addOrUpdate(User user) {
         if (null == getByAccount(user.getAccount())) {
+            // 不需要查重，因为存在的话可以直接更新
             userDAO.saveAndFlush(user);
             System.out.println("added user: "+user.getAccount()+"   id:"+user.getId());
             return new Result(Constants.code_success, "");
@@ -53,5 +65,21 @@ public class UserService {
                 System.out.println("id: "+user.getId()+" 更新用户兴趣列表: "+user.getFavorTypeList());
             }
         }
+    }
+
+//    public void addCart(int userId, int productId) {
+//        User user = userDAO.findById(userId);
+//        if (null != user) {
+//            Cart cart = cartDAO.findById(productId);
+//            cartDAO.save(cart);
+//        }
+//    }
+
+    public String getCart(int userId) {
+        User user = userDAO.findById(userId);
+        if (null != user) {
+            return orderDAO.getOne(userId).getPids();
+        }
+        return "查无此人";
     }
 }
