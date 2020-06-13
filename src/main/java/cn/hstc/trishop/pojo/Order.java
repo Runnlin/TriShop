@@ -29,6 +29,9 @@ public class Order {
 
     Date date;
 
+    @Column(name = "product_name")
+    String productName;
+
     public int getId() {
         return this.id;
     }
@@ -57,12 +60,22 @@ public class Order {
         this.date = date;
     }
 
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
-                "uid=" + uid +
+                "id=" + id +
+                ", uid=" + uid +
                 ", pid=" + pid +
                 ", date=" + date +
+                ", productName='" + productName + '\'' +
                 '}';
     }
 }

@@ -121,7 +121,7 @@ public class ProductService {
                 if (product.getQuantity() > 0) {
                     product.setQuantity(product.getQuantity() - 1);
                     productDAO.save(product);
-                    return orderService.addOrUpdate(userId, productId);
+                    return orderService.addOrUpdate(userId, productId, product.getName());
                 }
                 else
                     return new Result(Constants.code_nofind, "购买失败:库存不足");
