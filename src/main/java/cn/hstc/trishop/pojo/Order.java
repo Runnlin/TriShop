@@ -27,6 +27,9 @@ public class Order {
 
     int pid;
 
+    @Column(name = "num")
+    int num;
+
     Date date;
 
     @Column(name = "product_name")
@@ -68,12 +71,21 @@ public class Order {
         this.productName = productName;
     }
 
+    public int getNum() {
+        return num;
+    }
+
+    public void setNum(int num) {
+        this.num = num;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
                 "id=" + id +
                 ", uid=" + uid +
                 ", pid=" + pid +
+                ", num=" + num +
                 ", date=" + date +
                 ", productName='" + productName + '\'' +
                 '}';

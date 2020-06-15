@@ -114,14 +114,14 @@ public class ProductService {
         }
     }
 
-    public Result buyProduct(int userId, int productId) {
+    public Result buyProduct(int userId, int productId, int num) {
         if (productDAO.existsById(productId) && userService.existsById(userId)) {
             Product product = getById(productId);
             if (null != product) {
-                if (product.getQuantity() > 0) {
-                    product.setQuantity(product.getQuantity() - 1);
+                if (product.getQuantity() > num) {
+                    product.setQuantity(product.getQuantity() - num);
                     productDAO.save(product);
-                    return orderService.addOrUpdate(userId, productId, product.getName());
+                    return orderService.addOrUpdate(userId, productId, product.getName(), num);
                 }
                 else
                     return new Result(Constants.code_nofind, "购买失败:库存不足");

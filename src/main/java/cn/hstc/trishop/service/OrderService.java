@@ -25,12 +25,13 @@ public class OrderService {
         return order;
     }
 
-    public Result addOrUpdate(int userId, int productId, String productName) {
+    public Result addOrUpdate(int userId, int productId, String productName, int num) {
         if (0!=userId && 0!=productId) {
             Order order = new Order();
             order.setUid(userId);
             order.setPid(productId);
             order.setProductName(productName);
+            order.setNum(num);
             orderDAO.save(order);
             System.out.println("添加订单:" + order.toString());
             return new Result(Constants.code_success, "购买/添加订单 成功");
