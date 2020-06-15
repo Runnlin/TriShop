@@ -60,11 +60,20 @@ public class ProductController {
             "\n 参数名： types")
     @GetMapping("api/product/types")
     @ResponseBody
-    public List<Product> listByType(@RequestParam("types") String typeLists) throws Exception {
+    public List<Product> listByType(@RequestParam(name = "types") String typeLists,
+                                    @RequestParam(name = "user_id", required = false, defaultValue = "0") Integer userId) throws Exception {
         // 对html标签进行转义，防止xss攻击
         String typeLists1 = HtmlUtils.htmlEscape(typeLists);
+        // 获取全部
         if (typeLists1.equals("0")) {
-            return productService.list();
+                return productService.list();
+        }
+        // 获取私人推荐
+        if (typeLists1.equals("9")) {
+            if (0 != userId)
+                return productService.getProductListByPerson(userId);
+            else
+                return productService.list();
         }
         return productService.getProductListByType("[" + typeLists1 + "]");
     }

@@ -57,6 +57,21 @@ public class ProductService {
         return productDAO.findByTypeIn(lists);
     }
 
+    public List<Product> getProductListByPerson(int userId) {
+        User user = userService.userDAO.getOne(userId);
+        // JSON转换成List进行搜索test
+        List<String> lists = JSONObject.parseArray("["+user.getFavorTypeList()+"]", String.class);
+        List<Product> productList = new ArrayList<>();
+        System.out.println("根据用户喜爱列表获取商品： "+lists);
+        int listLen = lists.size() - 1;
+        // 从后往前，用用户喜爱类型搜索到相关类型商品，加入到返回列表中
+        while (listLen > 0) {
+            productList.addAll(getProductListBySingleType(lists.get(listLen)));
+            listLen--;
+        }
+        return productList;
+    }
+
     public List<Product> search(String productName) {
         return productDAO.findByNameLike('%' + productName.toUpperCase() + '%');
     }

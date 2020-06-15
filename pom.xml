@@ -10,9 +10,9 @@
     </parent>
     <groupId>cn.hstc</groupId>
     <artifactId>trishop</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.8</version>
     <name>trishop</name>
-    <description>Tri-Shop - The shop of Third Group on 20171153</description>
+    <description>Tri-Shop - A online shop of Third Group on 20171153</description>
 
     <properties>
         <java.version>1.8</java.version>
