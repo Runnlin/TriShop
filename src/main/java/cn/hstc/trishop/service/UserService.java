@@ -17,7 +17,7 @@ public class UserService {
     @Autowired
     UserDAO userDAO;
     @Autowired
-    OrderDAO orderDAO;
+    OrderService orderService;
 
     public boolean isExist(String account) {
         User user = getByAccount(account);
@@ -86,16 +86,13 @@ public class UserService {
 //    }
 
     public List<Order> getOrders(int userId) {
-        User user = userDAO.findById(userId);
-        if (null != user) {
-            return orderDAO.findByUidLike(userId);
+        if (existsById(userId)) {
+            return orderService.findByUidLike(userId);
         }
         return null;
     }
 
     public Result deleteOrder(int orderId) {
-        Order order = orderDAO.getOne(orderId);
-        orderDAO.delete(order);
-        return new Result(Constants.code_success, "删除成功");
+        return orderService.deleteOrder(orderId);
     }
 }

@@ -46,4 +46,18 @@ public class OrderService {
         Sort sort = Sort.by(Sort.Direction.DESC, "date");
         return orderDAO.findByUidLike(userId);
     }
+
+    public Result deleteOrder(int orderId) {
+        if (orderDAO.existsById(orderId)) {
+            Order order = orderDAO.getOne(orderId);
+            orderDAO.delete(order);
+            System.out.println("Order: id: " + orderId + " deleted");
+            return new Result(Constants.code_success, "删除成功");
+        }
+        return new Result(Constants.code_nofind, "删除失败");
+    }
+
+    public List<Order> findByUidLike(int uid) {
+        return orderDAO.findByUidLike(uid);
+    }
 }

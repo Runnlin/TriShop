@@ -122,7 +122,7 @@ public class ProductService {
         Product product = getById(id);
         if (null != product) {
             productDAO.delete(product);
-            System.out.println("id: " + product.getId() + " name: " + product.getName() + " deleted");
+            System.out.println("Product: id: " + product.getId() + " name: " + product.getName() + " deleted");
             return new Result(Constants.code_success, "删除成功");
         } else {
             return new Result(Constants.code_nofind, "找不到该商品");
