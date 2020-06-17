@@ -37,9 +37,9 @@ public class OrderService {
             order.setNum(num);
             orderDAO.save(order);
             System.out.println("添加订单:" + order.toString());
-            return new Result(Constants.code_success, "购买/添加订单 成功");
+            return new Result(Constants.code_success, "购买成功");
         }
-        return new Result(Constants.code_nofind, "添加订单失败:用户或商品id错误");
+        return new Result(Constants.code_nofind, "购买失败:添加订单失败:用户或商品id错误");
     }
 
     public List<Order> listByUserId(int userId) {

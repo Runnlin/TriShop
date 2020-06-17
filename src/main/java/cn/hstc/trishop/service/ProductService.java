@@ -41,7 +41,7 @@ public class ProductService {
     }
 
     public int getSize() {
-        return (int)productDAO.count();
+        return (int) productDAO.count();
     }
 
     public List<Product> getProductListBySingleType(String typeList) {
@@ -60,9 +60,9 @@ public class ProductService {
     public List<Product> getProductListByPerson(int userId) {
         User user = userService.userDAO.getOne(userId);
         // JSON转换成List进行搜索test
-        List<String> lists = JSONObject.parseArray("["+user.getFavorTypeList()+"]", String.class);
+        List<String> lists = JSONObject.parseArray("[" + user.getFavorTypeList() + "]", String.class);
         List<Product> productList = new ArrayList<>();
-        System.out.println("根据用户喜爱列表获取商品： "+lists);
+        System.out.println("根据用户喜爱列表获取商品： " + lists);
         int listLen = lists.size() - 1;
         // 从后往前，用用户喜爱类型搜索到相关类型商品，加入到返回列表中
         while (listLen > 0) {
@@ -78,7 +78,7 @@ public class ProductService {
 
     public void addOrUpdate(Product product) {
         productDAO.save(product);
-        System.out.println("新增商品:\n"+product.getName());
+        System.out.println("新增商品:\n" + product.getName());
     }
 
     public Product seeProduct(int userId, int productId) {
@@ -98,10 +98,10 @@ public class ProductService {
     }
 
     public String getProductSwipeImages() throws Exception {
-        return "[{\"src\"='"+Constants.urlHead+"/image/nv.jpg'},"
-                + "{\"src\"='"+Constants.urlHead+"/image/pangxie.jpg'},"
-                + "{\"src\"='"+Constants.urlHead+"/image/phone.png'},"
-                + "{\"src\"='"+Constants.urlHead+"/image/quanji.jpg'}]";
+        return "[{\"src\"='" + Constants.urlHead + "/image/nv.jpg'},"
+                + "{\"src\"='" + Constants.urlHead + "/image/pangxie.jpg'},"
+                + "{\"src\"='" + Constants.urlHead + "/image/phone.png'},"
+                + "{\"src\"='" + Constants.urlHead + "/image/quanji.jpg'}]";
     }
 
     public List<String> getProductDetailSwipe(int id) throws Exception {
@@ -111,18 +111,18 @@ public class ProductService {
             String swipeList = product.getSwipes();
 
             if (!swipeList.startsWith("["))
-                swipeList = "["+swipeList+"]";
+                swipeList = "[" + swipeList + "]";
 //            System.out.println(swipeList);
             return JSONObject.parseArray(swipeList, String.class);
         }
         return null;
     }
 
-    public Result deleteProduct(int id)  {
+    public Result deleteProduct(int id) {
         Product product = getById(id);
         if (null != product) {
             productDAO.delete(product);
-            System.out.println("id: "+product.getId()+" name: "+product.getName()+" deleted");
+            System.out.println("id: " + product.getId() + " name: " + product.getName() + " deleted");
             return new Result(Constants.code_success, "删除成功");
         } else {
             return new Result(Constants.code_nofind, "找不到该商品");
@@ -132,27 +132,40 @@ public class ProductService {
     public Result buyProduct(int userId, int productId, int num) {
         if (productDAO.existsById(productId) && userService.existsById(userId)) {
             Product product = getById(productId);
-            if (null != product) {
-                if (product.getQuantity() > num) {
-                    product.setQuantity(product.getQuantity() - num);
-                    productDAO.save(product);
-                    return orderService.addOrUpdate(userId, product, num);
-                }
-                else
-                    return new Result(Constants.code_nofind, "购买失败:库存不足");
-            }
-            return new Result(Constants.code_nofind, "购买失败:无此商品");
+            if (product.getQuantity() > num) {
+                product.setQuantity(product.getQuantity() - num);
+                product.setSales(product.getSales() + num);
+                productDAO.save(product);
+                return orderService.addOrUpdate(userId, product, num);
+            } else
+                return new Result(Constants.code_nofind, "购买失败:库存不足");
         }
         return new Result(Constants.code_nofind, "购买失败:用户或商品id错误");
     }
 
+    public Result buyProducts(int userId, List<Integer> pids, List<Integer> nums) {
+        for (int i = 0; i < pids.size(); i++) {
+            buyProduct(userId, pids.get(i), nums.get(i));
+        }
+        return new Result(Constants.code_success, "购买成功");
+    }
+
     public List<Product> getManyProducts(String res) {
         if (!res.startsWith("["))
-            res = "["+res+"]";
+            res = "[" + res + "]";
         List<Integer> reslist = JSONObject.parseArray(res, Integer.class);
         List<Product> results = new ArrayList<>();
         for (Integer integer : reslist)
             results.add(productDAO.getOne(integer));
+        return results;
+    }
+
+    public List<Product> getManyProductsByList(List<String> productIds) {
+        List<Product> results = new ArrayList<>();
+        for (String productId : productIds) {
+            int id = Integer.parseInt(productId);
+            results.add(productDAO.getOne(id));
+        }
         return results;
     }
 

@@ -130,8 +130,20 @@ public class ProductController {
     @ResponseBody
     public Result buyProduct(@RequestParam("user_id") int userId,
                              @RequestParam("product_id") int productId,
-                             @RequestParam(name = "product_num", defaultValue = "1", required = false) int num) {
+                             @RequestParam(name = "product_num", defaultValue = "1", required = false) Integer num) {
         return productService.buyProduct(userId, productId, num);
+    }
+
+    @ApiOperation(value = "购买多个商品", notes = "分别使用商品id和数量进行购买\n" +
+            "pids： 购买商品id列表\n" +
+            "nums：购买数量列表\n" +
+            "pid和num必须按顺序写入，确保他们的对应关系")
+    @GetMapping("api/product/buymany")
+    @ResponseBody
+    public Result buyProducts(@RequestParam("user_id") int userId,
+                              @RequestParam("pids") List<Integer> pids,
+                             @RequestParam("nums") List<Integer> nums) {
+        return productService.buyProducts(userId, pids, nums);
     }
 
     @ApiOperation(value = "通过多个商品id获取多个商品信息", notes = "request格式：\"1,2,3\"")

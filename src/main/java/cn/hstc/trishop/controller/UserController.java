@@ -81,7 +81,7 @@ public class UserController {
     @ResponseBody
     public User getUserInfo(
             @RequestParam(name = "account", required = false, defaultValue = "") String account,
-            @RequestParam(name = "id", required = false, defaultValue = "0") int id) {
+            @RequestParam(name = "id", required = false, defaultValue = "0") Integer id) {
         account = HtmlUtils.htmlEscape(account);
         if (!"".equals(account))
             return userService.getByAccount(account);
@@ -98,9 +98,16 @@ public class UserController {
     }
 
     @ApiOperation(value = "获取用户的所有订单")
-    @GetMapping(value = "api/user/getorder")
+    @GetMapping(value = "api/user/getorders")
     @ResponseBody
     public List<Order> getUserOrders(@RequestParam int userId) {
         return userService.getOrders(userId);
+    }
+
+    @ApiOperation(value = "删除某个订单")
+    @GetMapping(value = "api/user/deleteorder")
+    @ResponseBody
+    public Result deleteOrder(@RequestParam int orderId) {
+        return userService.deleteOrder(orderId);
     }
 }

@@ -92,4 +92,10 @@ public class UserService {
         }
         return null;
     }
+
+    public Result deleteOrder(int orderId) {
+        Order order = orderDAO.getOne(orderId);
+        orderDAO.delete(order);
+        return new Result(Constants.code_success, "删除成功");
+    }
 }
