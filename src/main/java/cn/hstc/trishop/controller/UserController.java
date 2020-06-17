@@ -60,8 +60,8 @@ public class UserController {
     }
 
     @ApiOperation(value = "新增/编辑 用户", notes = "发送用户信息，新增帐号.  必填项：account password \n" +
-            "<b>不要设置ID</b>\n" +
-            "若此用户已存在，则根据上传信息更新用户信息")
+            "若要编辑用户信息，发送更新后的相关字段时同时发送用户id\n" +
+            "<b>新增用户不要设置ID，编辑用户需要上传ID</b>\n")
     @PostMapping(value = "api/user/register")
     @ResponseBody
     public Result register(@RequestBody User requestUser) {
@@ -76,22 +76,28 @@ public class UserController {
         }
     }
 
-    @ApiOperation(value = "根据account获取用户信息", notes = "只需字段：account")
+    @ApiOperation(value = "根据用户 account 或 id 获取用户信息")
     @GetMapping(value = "api/user/get")
     @ResponseBody
-    public User getUserInfo(@RequestParam String account) {
+    public User getUserInfo(
+            @RequestParam(name = "account", required = false, defaultValue = "") String account,
+            @RequestParam(name = "id", required = false, defaultValue = "0") int id) {
         account = HtmlUtils.htmlEscape(account);
-        return userService.getByAccount(account);
+        if (!"".equals(account))
+            return userService.getByAccount(account);
+        else if (0 != id)
+            return userService.getById(id);
+        return null;
     }
 
-    @ApiOperation(value = "获取所有用户信息", notes = "只需字段：account")
+    @ApiOperation(value = "获取所有用户信息")
     @GetMapping(value = "api/user/getall")
     @ResponseBody
     public List<User> getAllUserInfo() {
         return userService.list();
     }
 
-    @ApiOperation(value = "获取用户的所有订单", notes = "订单字段: int id; int pid; int uid; Date date")
+    @ApiOperation(value = "获取用户的所有订单")
     @GetMapping(value = "api/user/getorder")
     @ResponseBody
     public List<Order> getUserOrders(@RequestParam int userId) {

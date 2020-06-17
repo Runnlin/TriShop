@@ -2,6 +2,7 @@ package cn.hstc.trishop.service;
 
 import cn.hstc.trishop.DAO.OrderDAO;
 import cn.hstc.trishop.pojo.Order;
+import cn.hstc.trishop.pojo.Product;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +26,14 @@ public class OrderService {
         return order;
     }
 
-    public Result addOrUpdate(int userId, int productId, String productName, int num) {
-        if (0!=userId && 0!=productId) {
+    public Result addOrUpdate(int userId, Product product, int num) {
+        if (0!=userId && 0!=product.getId()) {
             Order order = new Order();
             order.setUid(userId);
-            order.setPid(productId);
-            order.setProductName(productName);
+            order.setPid(product.getId());
+            order.setProductName(product.getName());
+            order.setFee(product.getFee());
+            order.setPhotoUrl(product.getPhotoUrl());
             order.setNum(num);
             orderDAO.save(order);
             System.out.println("添加订单:" + order.toString());

@@ -78,8 +78,9 @@ public class ProductController {
         return productService.getProductListByType("[" + typeLists1 + "]");
     }
 
-    @ApiOperation(value = "新增商品", notes = "价格：product_fee  和  商品名：product_name  为必填项\n" +
-            "<b>不要设置ID</b>")
+    @ApiOperation(value = "新增/编辑 商品", notes = "必填项： product_fee(不为0)  product_name  \n" +
+            "若要编辑商品信息，发送更新后的相关字段时同时发送商品id\n" +
+            "<b>新增商品不要设置ID，编辑商品需要上传ID</b>")
     @PostMapping("api/product/add")
     @ResponseBody
     public Result addOrUpdate(@RequestBody Product requestProduct) {

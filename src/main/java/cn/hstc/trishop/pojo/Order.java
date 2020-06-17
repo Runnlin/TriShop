@@ -23,17 +23,30 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     int id;
 
+    @ApiParam(value = "订单——用户id")
     int uid;
 
+    @ApiParam(value = "订单——商品id")
     int pid;
 
+    @ApiParam(value = "订单——商品数量")
     @Column(name = "num")
     int num;
 
+    @ApiParam(value = "订单——购买日期")
     Date date;
 
+    @ApiParam(value = "订单——商品名称")
     @Column(name = "product_name")
-    String productName;
+    String productName;// 商品名称
+
+    @ApiParam(value = "订单——商品图片")
+    @Column(name = "product_photo_url")
+    String photoUrl;//产品图片
+
+    @ApiParam(value = "订单——商品费用")
+    @Column(name = "product_fee")
+    float fee;//产品费用
 
     public int getId() {
         return this.id;
@@ -79,6 +92,22 @@ public class Order {
         this.num = num;
     }
 
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
+
+    public float getFee() {
+        return fee;
+    }
+
+    public void setFee(float fee) {
+        this.fee = fee;
+    }
+
     @Override
     public String toString() {
         return "Order{" +
@@ -88,6 +117,8 @@ public class Order {
                 ", num=" + num +
                 ", date=" + date +
                 ", productName='" + productName + '\'' +
+                ", photoUrl='" + photoUrl + '\'' +
+                ", fee=" + fee +
                 '}';
     }
 }

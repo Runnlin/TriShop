@@ -33,6 +33,10 @@ public class UserService {
         return userDAO.findByAccount(account);
     }
 
+    public User getById(int id) {
+        return userDAO.getOne(id);
+    }
+
     public List<User> list() {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
         return userDAO.findAll(sort);
