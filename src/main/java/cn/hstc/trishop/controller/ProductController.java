@@ -129,7 +129,7 @@ public class ProductController {
     @ResponseBody
     public Result buyProduct(@RequestParam("user_id") int userId,
                              @RequestParam("product_id") int productId,
-                             @RequestParam("product_num") int num) {
+                             @RequestParam(name = "product_num", defaultValue = "1", required = false) int num) {
         return productService.buyProduct(userId, productId, num);
     }
 
