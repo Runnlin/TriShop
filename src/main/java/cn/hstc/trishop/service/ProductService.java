@@ -76,9 +76,10 @@ public class ProductService {
         return productDAO.findByNameLike('%' + productName.toUpperCase() + '%');
     }
 
-    public void addOrUpdate(Product product) {
-        productDAO.save(product);
+    public Result addOrUpdate(Product product) {
+        productDAO.saveAndFlush(product);
         System.out.println("新增商品:\n" + product.getName());
+        return new Result(Constants.code_success, "成功");
     }
 
     public Product seeProduct(int userId, int productId) {

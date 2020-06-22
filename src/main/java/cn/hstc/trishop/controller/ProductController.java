@@ -86,9 +86,8 @@ public class ProductController {
     public Result addOrUpdate(@RequestBody Product requestProduct) {
         if (requestProduct.getFee() == 0)
             return new Result(Constants.code_void, "价格不可为0");
-
         if (!requestProduct.getName().isEmpty()) {
-            return new Result(Constants.code_success, "成功");
+            return productService.addOrUpdate(requestProduct);
         } else {
             return new Result(Constants.code_void, "商品名不能为空");
         }

@@ -6,6 +6,8 @@ import cn.hstc.trishop.pojo.Order;
 import cn.hstc.trishop.pojo.User;
 import cn.hstc.trishop.result.Result;
 import cn.hstc.trishop.utils.Constants;
+import cn.hstc.trishop.utils.StringUtils;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ public class UserService {
 
     public boolean isExist(String account) {
         User user = getByAccount(account);
-        return null!=user;
+        return null != user;
     }
 
     public boolean existsById(int userId) {
@@ -47,14 +49,43 @@ public class UserService {
     }
 
     public Result addOrUpdate(User user) {
-        if (null == getByAccount(user.getAccount())) {
-            // 不需要查重，因为存在的话可以直接更新
-            userDAO.saveAndFlush(user);
-            System.out.println("added user: "+user.getAccount()+"   id:"+user.getId());
-            return new Result(Constants.code_success, "");
+        if (null == getById(user.getId()) || 0 == user.getId()) {
+            // ADD
+            if (null == user.getAccount() || "".equals(user.getAccount())) {
+                if (null == user.getPassword() || "".equals(user.getPassword()))
+                    return new Result(Constants.code_existed, "账号或密码不能为空");
+            } else if (null != getByAccount(user.getAccount()))
+                return new Result(Constants.code_existed, "用户名已存在");
+            else {
+                userDAO.save(user);
+                System.out.println("added user: " + user.toString());
+                return new Result(Constants.code_success, "用户注册成功");
+            }
         } else {
-            return new Result(Constants.code_existed, "用户已存在");
+            // UPDATE
+            User userUpdated = getById(user.getId());
+            if (null != userUpdated) {
+//                userUpdated.setAccount(user.getAccount()); // 不能修改 account
+                if (!StringUtil.isNullOrEmpty(user.getFavorTypeList()))
+                    userUpdated.setFavorTypeList(user.getFavorTypeList());
+//                if (!StringUtil.isNullOrEmpty(user.isAdmin()))
+//                    userUpdated.setAdmin(user.isAdmin());
+                if (!StringUtil.isNullOrEmpty(user.getEmail()))
+                    userUpdated.setEmail(user.getEmail());
+                if (0 != user.getGender())
+                    userUpdated.setGender(user.getGender());
+                if (!StringUtil.isNullOrEmpty(user.getHeadUrl()))
+                    userUpdated.setHeadUrl(user.getHeadUrl());
+                if (!StringUtil.isNullOrEmpty(user.getPassword()))
+                    userUpdated.setPassword(user.getPassword());
+                if (!StringUtil.isNullOrEmpty(user.getPhoneNum()))
+                    userUpdated.setPhoneNum(user.getPhoneNum());
+                userDAO.saveAndFlush(userUpdated);
+                System.out.println("updated user: " + user.toString());
+                return new Result(Constants.code_success, "用户信息更新成功");
+            }
         }
+        return new Result(Constants.code_unknow, "未知错误");
     }
 
     public void addFavorType(int userId, String singleType) {
@@ -72,7 +103,7 @@ public class UserService {
                 // 再将喜爱类型列表放回去
                 user.setFavorTypeList(userTypeList);
                 userDAO.save(user);
-                System.out.println("id: "+user.getId()+" 更新用户兴趣列表: "+user.getFavorTypeList());
+                System.out.println("id: " + user.getId() + " 更新用户兴趣列表: " + user.getFavorTypeList());
             }
         }
     }

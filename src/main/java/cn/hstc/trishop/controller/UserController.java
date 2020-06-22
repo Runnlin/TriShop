@@ -36,7 +36,7 @@ public class UserController {
 
         User user = userService.get(account, requestUser.getPassword());
         if (null != user) {
-            System.out.println("id:"+user.getId()+" account: "+account+" logged");
+            System.out.println("id:" + user.getId() + " account: " + account + " logged");
             session.setAttribute("user", user);
             return new Result(Constants.code_success, user.toString());
         } else {
@@ -65,15 +65,10 @@ public class UserController {
     @PostMapping(value = "api/user/register")
     @ResponseBody
     public Result register(@RequestBody User requestUser) {
-        if (null!=requestUser.getAccount()
-            && null != requestUser.getPassword()) {
-            // 对html标签进行转义，防止xss攻击
+        // 对html标签进行转义，防止xss攻击
+        if (null != requestUser.getAccount() && !"".equals(requestUser.getAccount()))
             requestUser.setAccount(HtmlUtils.htmlEscape(requestUser.getAccount()));
-
-            return userService.addOrUpdate(requestUser);
-        } else {
-            return new Result(Constants.code_success, "");
-        }
+        return userService.addOrUpdate(requestUser);
     }
 
     @ApiOperation(value = "根据用户 account 或 id 获取用户信息")
