@@ -170,6 +170,20 @@ public class ProductService {
         return results;
     }
 
+    public int getProductsNumByType(String type) {
+        if ("0".equals(type))
+            return list().size();
+        return getProductListByType(type).size();
+    }
+
+    public int getAllOrderFee() {
+        int num = 0;
+        for (Order order : orderService.list()) {
+            num += order.getFee();
+        }
+        return num;
+    }
+
     public List<Product> getOrderProductsByUserId(int userId) {
         if (userService.existsById(userId)) {
             List<Product> results = new ArrayList<>();

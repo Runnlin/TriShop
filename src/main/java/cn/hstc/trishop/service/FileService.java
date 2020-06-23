@@ -3,6 +3,8 @@ package cn.hstc.trishop.service;
 import cn.hstc.trishop.pojo.FileProperties;
 import cn.hstc.trishop.result.FileException;
 import cn.hstc.trishop.result.UploadFileResponse;
+import org.apache.commons.lang.RandomStringUtils;
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -46,7 +48,10 @@ public class FileService {
      * @return 文件名
      */
     public String storeFile(MultipartFile file) {
-        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        String fileName = RandomStringUtils.randomAlphabetic(6)+StringUtils.cleanPath(file.getOriginalFilename());
+        // 设置文件名最大长度10
+        if (fileName.length() > 10)
+            fileName = fileName.substring(10);
 
         try {
             if (fileName.contains("..")) {
@@ -56,7 +61,7 @@ public class FileService {
             // copy file to the target location (Overwrite the same name file)
             Path targetLoacation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLoacation, StandardCopyOption.REPLACE_EXISTING);
-
+            System.out.println("store File Path： "+fileStorageLocation);
             return fileName;
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -89,10 +94,17 @@ public class FileService {
      * @return 上传结果
      */
     public UploadFileResponse upload(MultipartFile file) {
+        if (file.isEmpty()) {
+            System.out.println("上传文件为空");
+            return null;
+        }
+        if (file.getSize() > 1024 * 1024) {
+            System.out.println("上传文件过大");
+            return null;
+        }
         String fileName = storeFile(file);
 
         String fileDownloadUri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/downloadFile/")
                 .path(fileName)
                 .toUriString();
 

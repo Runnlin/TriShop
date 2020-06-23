@@ -69,7 +69,7 @@ public class ProductController {
                 return productService.list();
         }
         // 获取私人推荐
-        if (typeLists1.equals("9")) {
+        if (typeLists1.equals("99")) {
             if (0 != userId)
                 return productService.getProductListByPerson(userId);
             else
@@ -161,11 +161,33 @@ public class ProductController {
         return productService.getOrderProductsByUserId(userId);
     }
 
-//    @ApiOperation(value = "上传单个文件")
-//    @PostMapping("api/product/upload")
-//    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file){
-//        return fileService.upload(file);
-//    }
+    @ApiOperation(value = "根据类型获取商品数量", notes = "0为总商品数量")
+    @GetMapping("api/product/getProductNum")
+    @ResponseBody
+    public int getProductsNumByType(@RequestParam String type) {
+        return productService.getProductsNumByType(type);
+    }
+
+    @ApiOperation(value = "获取订单总金额")
+    @GetMapping("api/product/getAllOrderFee")
+    @ResponseBody
+    public int getAllOrderFee() {
+        return productService.getAllOrderFee();
+    }
+
+    @ApiOperation(value = "上传单个文件")
+    @PostMapping("api/file/upload")
+    @ResponseBody
+    public UploadFileResponse uploadFile(@RequestParam("file") MultipartFile file){
+        return fileService.upload(file);
+    }
+
+    @ApiOperation(value = "加载单个文件")
+    @GetMapping("api/file/load")
+    public Resource loadFileAsResource(@RequestParam("fileName") String fileName) {
+        return fileService.loadFileAsResource(fileName);
+    }
+
 //
 //    @ApiOperation(value = "上传多个文件", notes = "前后端实现参考：https://zhuanlan.zhihu.com/p/60856486")
 //    @PostMapping("api/product/uploads")

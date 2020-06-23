@@ -105,4 +105,18 @@ public class UserController {
     public Result deleteOrder(@RequestParam int orderId) {
         return userService.deleteOrder(orderId);
     }
+
+    @ApiOperation(value = "获取用户总数")
+    @GetMapping(value = "api/user/getUserNum")
+    @ResponseBody
+    public int getUserNum() {
+        return userService.getUserNum();
+    }
+
+    @ApiOperation(value = "获取订单总数")
+    @GetMapping(value = "api/user/getOrderNum")
+    @ResponseBody
+    public int getOrderNum() {
+        return userService.getOrderNum();
+    }
 }

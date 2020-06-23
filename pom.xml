@@ -13,6 +13,7 @@
     <version>0.8</version>
     <name>trishop</name>
     <description>Tri-Shop - A online shop of Third Group on 20171153</description>
+    <packaging>jar</packaging>
 
     <properties>
         <java.version>1.8</java.version>

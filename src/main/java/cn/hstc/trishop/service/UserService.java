@@ -108,19 +108,19 @@ public class UserService {
         }
     }
 
-//    public void addCart(int userId, int productId) {
-//        User user = userDAO.findById(userId);
-//        if (null != user) {
-//            Cart cart = cartDAO.findById(productId);
-//            cartDAO.save(cart);
-//        }
-//    }
-
     public List<Order> getOrders(int userId) {
         if (existsById(userId)) {
             return orderService.findByUidLike(userId);
         }
         return null;
+    }
+
+    public int getUserNum() {
+        return list().size();
+    }
+
+    public int getOrderNum() {
+        return orderService.list().size();
     }
 
     public Result deleteOrder(int orderId) {
