@@ -49,9 +49,10 @@ public class FileService {
      */
     public String storeFile(MultipartFile file) {
         String fileName = RandomStringUtils.randomAlphabetic(6)+StringUtils.cleanPath(file.getOriginalFilename());
+        System.out.println("fileName: "+fileName);
         // 设置文件名最大长度10
-        if (fileName.length() > 10)
-            fileName = fileName.substring(10);
+//        if (fileName.length() > 10)
+//            fileName = fileName.substring(10);
 
         try {
             if (fileName.contains("..")) {
@@ -61,7 +62,6 @@ public class FileService {
             // copy file to the target location (Overwrite the same name file)
             Path targetLoacation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLoacation, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("store File Path： "+fileStorageLocation);
             return fileName;
         } catch (IOException ex) {
             ex.printStackTrace();
