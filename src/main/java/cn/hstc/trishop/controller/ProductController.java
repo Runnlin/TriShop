@@ -57,7 +57,8 @@ public class ProductController {
     }
 
     @ApiOperation(value = "通过类别获取获取商品列表", notes = "通过typeList进行查找，typeList格式：“1,2”" +
-            "\n 参数名： types")
+            "\n 参数名： types" +
+            "\n 传参typeList: \"99\"、user_id")
     @GetMapping("api/product/types")
     @ResponseBody
     public List<Product> listByType(@RequestParam(name = "types") String typeLists,
