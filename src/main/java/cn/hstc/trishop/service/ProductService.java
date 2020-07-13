@@ -151,11 +151,13 @@ public class ProductService {
         return new Result(Constants.code_success, "购买成功");
     }
 
-    public List<Product> getManyProducts(String res) {
+    public List<Product> getManyProducts(String res) throws Exception {
+        List<Product> results = new ArrayList<>();
         if (!res.startsWith("["))
             res = "[" + res + "]";
+        if (!res.contains(","))
+            return results;
         List<Integer> reslist = JSONObject.parseArray(res, Integer.class);
-        List<Product> results = new ArrayList<>();
         for (Integer integer : reslist)
             results.add(productDAO.getOne(integer));
         return results;
